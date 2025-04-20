@@ -1,37 +1,21 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Dashboard from "./components/Dashboard";
 
-import Layout from "./Layout";
-import Index from "./pages/Index";
-import ServersPage from "./pages/ServersPage";
-import SettingsPage from "./pages/SettingsPage";
-import AccountPage from "./pages/AccountPage";
-import NotFound from "./pages/NotFound";
-
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+const App = () => {
+  return (
+    <BrowserRouter>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
         <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/servers" element={<ServersPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/account" element={<AccountPage />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/servers" element={<div className="p-8">Servers Page</div>} />
+          <Route path="/settings" element={<div className="p-8">Settings Page</div>} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </div>
+    </BrowserRouter>
+  );
+};
 
 export default App;
