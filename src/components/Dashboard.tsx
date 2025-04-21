@@ -1,75 +1,116 @@
 
-import React, { useState } from 'react';
-import Button from './Button';
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Globe, Shield, Wifi, Server, Lock } from "lucide-react";
+import ServerSelector from "@/components/ServerSelector";
+import ConnectionStatus from "@/components/ConnectionStatus";
+import ConnectionStats from "@/components/ConnectionStats";
 
 const Dashboard = () => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [selectedServer, setSelectedServer] = useState('New York, US');
+  const [connectionStatus, setConnectionStatus] = useState<"connected" | "disconnected" | "connecting">("disconnected");
+  const [selectedServer, setSelectedServer] = useState("New York, US");
 
   const handleConnect = () => {
-    setIsConnected(!isConnected);
+    if (connectionStatus === "disconnected") {
+      setConnectionStatus("connecting");
+      setTimeout(() => {
+        setConnectionStatus("connected");
+      }, 2000);
+    } else {
+      setConnectionStatus("disconnected");
+    }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-800">VPN Status</h2>
-              <p className="text-gray-600">Current server: {selectedServer}</p>
-            </div>
-            <div className="flex items-center">
-              <div className={`h-3 w-3 rounded-full mr-2 ${
-                isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'
-              }`} />
-              <span className="text-gray-700">
-                {isConnected ? 'Connected' : 'Disconnected'}
-              </span>
-            </div>
-          </div>
-          
-          <Button
-            variant={isConnected ? 'danger' : 'primary'}
-            size="lg"
-            className="w-full"
-            onClick={handleConnect}
-          >
-            {isConnected ? 'Disconnect' : 'Connect'}
-          </Button>
-          
-          {isConnected && (
-            <div className="mt-4 grid grid-cols-2 gap-4">
-              <div className="bg-gray-50 p-4 rounded-md">
-                <p className="text-sm text-gray-600">Upload Speed</p>
-                <p className="text-lg font-semibold">45.2 Mbps</p>
+    <div className="container mx-auto py-6 px-4 max-w-5xl">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Connection Status</CardTitle>
+                <CardDescription>Manage your VPN connection</CardDescription>
               </div>
-              <div className="bg-gray-50 p-4 rounded-md">
-                <p className="text-sm text-gray-600">Download Speed</p>
-                <p className="text-lg font-semibold">78.9 Mbps</p>
-              </div>
+              <ConnectionStatus status={connectionStatus} />
             </div>
-          )}
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-xl font-semibold mb-4">Quick Connect Servers</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {['New York, US', 'London, UK', 'Singapore', 'Tokyo, JP'].map((server) => (
-              <button
-                key={server}
-                onClick={() => setSelectedServer(server)}
-                className={`p-4 rounded-md border transition-colors ${
-                  selectedServer === server 
-                    ? 'border-blue-500 bg-blue-50' 
-                    : 'border-gray-200 hover:border-blue-300'
-                }`}
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center space-x-3">
+                  <Globe className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Selected Server</p>
+                    <p className="text-lg font-semibold">{selectedServer}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Shield className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Protection</p>
+                    <p className="text-lg font-semibold">
+                      {connectionStatus === "connected" ? "Active" : "Inactive"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <Button 
+                className={`w-full ${connectionStatus === "connected" ? "bg-destructive hover:bg-destructive/90" : "bg-primary hover:bg-primary/90"}`} 
+                size="lg" 
+                onClick={handleConnect}
               >
-                <p className="font-medium">{server}</p>
-              </button>
-            ))}
-          </div>
-        </div>
+                {connectionStatus === "connected" ? "Disconnect" : connectionStatus === "connecting" ? "Connecting..." : "Connect"}
+              </Button>
+              
+              {connectionStatus === "connected" && <ConnectionStats />}
+            </div>
+          </CardContent>
+        </Card>
+        
+        <ServerSelector onServerSelect={setSelectedServer} selectedServer={selectedServer} />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center space-x-2">
+              <Wifi className="h-5 w-5 text-primary" />
+              <CardTitle className="text-lg">Network Protection</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">Protect your data on public WiFi networks.</p>
+            <Button variant="outline" className="w-full">Manage Settings</Button>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <div className="flex items-center space-x-2">
+              <Server className="h-5 w-5 text-primary" />
+              <CardTitle className="text-lg">Server Status</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">All servers operational.</p>
+            <Button variant="outline" className="w-full">View Status</Button>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <div className="flex items-center space-x-2">
+              <Lock className="h-5 w-5 text-primary" />
+              <CardTitle className="text-lg">Privacy Features</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">Enhance your online privacy.</p>
+            <Button variant="outline" className="w-full">Configure</Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
