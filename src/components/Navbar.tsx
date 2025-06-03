@@ -37,6 +37,9 @@ const Navbar = () => {
             <Link to="/account" className="text-sm font-medium text-muted-foreground hover:text-foreground">
               Account
             </Link>
+            <Link to="/admin" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+              Admin
+            </Link>
           </>
         )}
         <Button variant="default" size="sm">

@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import {
   Sidebar,
@@ -20,7 +19,8 @@ import {
   User, 
   Shield, 
   HelpCircle, 
-  LogOut 
+  LogOut,
+  Users
 } from "lucide-react";
 
 export function AppSidebar() {
@@ -46,6 +46,11 @@ export function AppSidebar() {
       title: "Account",
       icon: User,
       path: "/account"
+    },
+    {
+      title: "Admin",
+      icon: Users,
+      path: "/admin"
     }
   ];
 
