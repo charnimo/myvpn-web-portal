@@ -9,7 +9,7 @@ const Layout = () => {
   const isMobile = useIsMobile();
 
   return (
-    <SidebarProvider defaultCollapsed={isMobile}>
+    <SidebarProvider>
       <div className="min-h-screen flex w-full">
         {!isMobile && <AppSidebar />}
         <div className="flex-1 flex flex-col">
